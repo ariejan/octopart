@@ -22,7 +22,7 @@ describe Octopart::Part do
       subject { described_class.find('a0c06b42fce37f07', '5e7297f5473381b5', '246ded63eb3efbaa')}
 
       it { should be_a(Hash) }
-      it { should have_size(3) }
+      it { expect(subject.size).to eq(3) }
       it { should include('a0c06b42fce37f07', '5e7297f5473381b5', '246ded63eb3efbaa')}
 
       it "each object in the array should be a part" do
