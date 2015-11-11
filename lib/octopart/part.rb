@@ -18,14 +18,15 @@ module Octopart
         when 0
           raise ArgumentError.new("Please specify atleast 1 uid")
         when 1
-          response = JSON.parse(self.get('parts/get', uid: args.first))
+          response = JSON.parse(self.get("parts/#{args.first}", {}))
         else
-          response = JSON.parse(self.get('parts/get_multi', uids: args.to_json))
+          params = args.map.with_index { |uid, i| ["uid[#{i}]", uid] }.to_h
+          response = JSON.parse(self.get("parts/get_multi", params))
         end
         self.build(response)
       end
 
-      # Public: Search for parts that match the given query and returns an Array of 
+      # Public: Search for parts that match the given query and returns an Array of
       # Octopart::Part
       #
       # query   - A search term
@@ -47,22 +48,6 @@ module Octopart
         response = JSON.parse(self.get('parts/search', params))
         parts = response['results'].map { |part| part['item'] }
         self.build(parts)
-      end
-
-      # Public: Suggest a search term. Can be used for autocomplete
-      #
-      # term    - A term to make suggestions for
-      # options - A set of options (default: {})
-      #           :limit - Number of results to return.
-      #
-      # Examples
-      #   
-      #   Octopart::Part.suggest('sn728')
-      #   # => ["SN72811", "SN72811N", "SN72810N", "SN72820N", "SN72810"]
-      def suggest(term, options = {})
-        params = options.merge(q: term)
-        response = JSON.parse(self.get('parts/suggest', params))
-        response['results']
       end
 
       # Public: Matches a manufacturer and manufacturer part number to an Octopart part UID
@@ -119,7 +104,7 @@ module Octopart
     # datasheets
     #
     # Examples
-    #   
+    #
     #   Octopart::Part.find(39619421).datasheet
     #   # => http://datasheet.octopart.com/H-46-6A-Bourns-datasheet-12570.pdf
     def datasheet

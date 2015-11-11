@@ -1,6 +1,6 @@
 module Octopart
   class Base < Hashie::Mash
-    API_BASE = 'http://octopart.com/api/v2/'
+    API_BASE = 'http://octopart.com/api/v3/'
 
     class << self
 

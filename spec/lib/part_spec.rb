@@ -11,17 +11,19 @@ describe Octopart::Part do
     end
     context "when given a part uid" do
       use_vcr_cassette
-      subject { described_class.find('39619421') }
+      subject { described_class.find('a0c06b42fce37f07') }
 
       it { should be_a(Octopart::Part) }
-      it { subject.uid.should eq(39619421) }
+      it { subject.uid.should eq('a0c06b42fce37f07') }
     end
-    
+
     context "when given multiple part uids" do
       use_vcr_cassette
-      subject { described_class.find(39619421, 29035751, 31119928)}
+      subject { described_class.find('a0c06b42fce37f07', '5e7297f5473381b5', '246ded63eb3efbaa')}
 
-      it { should be_a(Array) }
+      it { should be_a(Hash) }
+      it { should have_size(3) }
+      it { should include('a0c06b42fce37f07', '5e7297f5473381b5', '246ded63eb3efbaa')}
 
       it "each object in the array should be a part" do
         subject.each { |part| part.should be_a(Octopart::Part) }
@@ -38,18 +40,6 @@ describe Octopart::Part do
 
       it "each object in the array should be a part" do
         subject.each { |part| part.should be_a(Octopart::Part) }
-      end
-    end
-  end
-
-  describe "#suggest" do
-    context "when given a search term" do
-      use_vcr_cassette
-      subject { described_class.suggest('sn74f') }
-
-      it { should be_a(Array) }
-      it "each object in the array should be a string" do
-        subject.each { |suggestion| suggestion.should be_a(String) }
       end
     end
   end
@@ -83,7 +73,7 @@ describe Octopart::Part do
   describe ".datasheet" do
     context "when a part has datasheets" do
       use_vcr_cassette
-      subject { described_class.find(39619421).datasheet }
+      subject { described_class.find('a0c06b42fce37f07').datasheet }
 
       it { should eq('http://datasheet.octopart.com/H-46-6A-Bourns-datasheet-12570.pdf') }
     end
@@ -98,22 +88,22 @@ describe Octopart::Part do
 
   describe ".price" do
     use_vcr_cassette
-    subject { described_class.find(39619421).average_price }
+    subject { described_class.find('a0c06b42fce37f07').average_price }
 
     it { should eq(16.455546153846154) }
   end
-  
+
   describe ".best_offer" do
     context "for a quantity of 1" do
       use_vcr_cassette
-      subject { described_class.find(39619421).best_offer.sku }
+      subject { described_class.find('a0c06b42fce37f07').best_offer.sku }
 
       it { should eq('H466A') }
     end
 
     context "for a quantity of 100" do
       use_vcr_cassette
-      subject { described_class.find(39619421).best_offer(100).sku }
+      subject { described_class.find('a0c06b42fce37f07').best_offer(100).sku }
 
       it { should eq('H466A') }
     end
@@ -122,14 +112,14 @@ describe Octopart::Part do
   describe ".best_price" do
     context "for a quantity of 1" do
       use_vcr_cassette
-      subject { described_class.find(39619421).best_price }
+      subject { described_class.find('a0c06b42fce37f07').best_price }
 
       it { should eq(14.67) }
     end
 
     context "for a quantity of 100" do
       use_vcr_cassette
-      subject { described_class.find(39619421).best_price(100) }
+      subject { described_class.find('a0c06b42fce37f07').best_price(100) }
 
       it { should eq(12.84) }
     end
